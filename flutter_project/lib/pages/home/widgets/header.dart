@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project/profile_page.dart';
 import 'package:sliver_header_delegate/sliver_header_delegate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../models/user.dart';
@@ -40,9 +41,9 @@ class _Search extends StatelessWidget {
       child: Container(
         height: 40,
         child: CupertinoTextField(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(color: LinkedInColors.white, borderRadius: BorderRadius.circular(7.5)),
-          prefix: Padding(padding: const EdgeInsets.only(left: 10), child: Icon(Icons.search, color: Colors.black26)),
+          prefix: const Padding(padding: EdgeInsets.only(left: 10), child: const Icon(Icons.search, color: Colors.black26)),
           placeholder: 'Search',
           placeholderStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.black26),
           style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.black87),
@@ -77,12 +78,12 @@ class _PhotoUser extends StatelessWidget {
   const _PhotoUser({Key? key}) : super(key: key);
 
   void _onTap(BuildContext context) {
-    // Navigator.push(
-    //   context,
-    //   PageRouteBuilder(
-    //       transitionDuration: const Duration(milliseconds: 600),
-    //       pageBuilder: (_, animation, __) => FadeTransition(opacity: animation, child: ProfilePage())),
-    // );
+    Navigator.push(
+        context,
+        PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 600),
+          pageBuilder: (_, animation, __) => FadeTransition(opacity: animation, child: const Profilepage())),
+    );
   }
 
   @override

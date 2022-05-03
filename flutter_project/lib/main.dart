@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'profile_page.dart';
@@ -8,28 +10,43 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  //Initializa Firebase App
+  Future<FirebaseApp> _initializeFirebase() async {
+    FirebaseApp firebaseApp = await Firebase.initializeApp();
+    return firebaseApp;
+  }
+
   @override
   Widget build(BuildContext context) {
     final appTitle = 'LinkedIn';
     return MaterialApp(
-      theme: ThemeData(
-          fontFamily: 'Quicksand'
-      ),
+      theme: ThemeData(fontFamily: 'Quicksand'),
       title: appTitle,
       routes: {
-        '/home':(context) => Homepage(),
-        '/profile':(context) => const Profilepage(),
+        '/home': (context) => Homepage(),
+        '/profile': (context) => const Profilepage(),
       },
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: primaryColor,
           title: Text(appTitle),
         ),
-        body: MyCustomForm(),
+        body: FutureBuilder(
+          future: _initializeFirebase(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return MyCustomForm();
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
       ),
     );
   }
 }
+
 // Create a Form widget.
 class MyCustomForm extends StatefulWidget {
   @override
@@ -37,8 +54,28 @@ class MyCustomForm extends StatefulWidget {
     return MyCustomFormState();
   }
 }
+
 // Create a corresponding State class, which holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
+  //Login function
+  static Future<User?> loginUsingEmailPassword(
+      {required String email,
+      required String password,
+      required BuildContext context}) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user;
+    try {
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      user = userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        print("No User found for that email !");
+      }
+    }
+    return user;
+  }
+
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -84,7 +121,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               labelText: 'User Name',
             ),
             validator: (value) {
-              if (value==null || value.isEmpty) {
+              if (value == null || value.isEmpty) {
                 return 'Please enter username';
               }
               return null;
@@ -103,7 +140,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               labelText: 'Password',
             ),
             validator: (value) {
-              if (value==null || value.isEmpty) {
+              if (value == null || value.isEmpty) {
                 return 'Please enter valid password';
               }
               return null;
@@ -122,25 +159,59 @@ class MyCustomFormState extends State<MyCustomForm> {
           Container(
               alignment: Alignment.center,
               child: RaisedButton(
+                padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 20),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(50.0),
                 ),
                 elevation: 10,
                 color: primaryColor,
-                child: const Text('Login',
+                child: const Text(
+                  'Login',
                   style: TextStyle(
                     color: Colors.white,
+                    fontSize: 17.0,
                   ),
                 ),
-                onPressed: () {
-                  // It returns true if the form is valid, otherwise returns false
+                onPressed: () async {
+                  User? user = await loginUsingEmailPassword(
+                      email: nameController.text,
+                      password: passwordController.text,
+                      context: context);
+                  print(user);
                   if (_formKey.currentState!.validate()) {
+                    print(nameController.text);
+                    print(passwordController.text);
+                  }
+                  if (user != null) {
+                    Navigator.pushNamed(context, '/home');
+                    nameController.clear();
+                    passwordController.clear();
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Incorrect Credentials !"),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text('Ok'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                  // It returns true if the form is valid, otherwise returns false
+                  /*if (_formKey.currentState!.validate()) {
                     Navigator.pushNamed(context, '/home');
                     print(nameController.text);
                     print(passwordController.text);
                     nameController.clear();
                     passwordController.clear();
-                  }
+                  }*/
                 },
               )),
         ],

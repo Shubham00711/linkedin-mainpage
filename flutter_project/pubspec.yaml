@@ -33,11 +33,12 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
   provider: ^6.0.2
   flutter_svg: ^1.0.3
   sliver_header_delegate: ^0.0.5
   google_fonts: ^2.3.1
+  cloud_firestore: ^2.4.0
+  cupertino_icons: ^1.0.2
   firebase_core: ^1.15.0
   firebase_auth: ^3.3.15
 
@@ -67,7 +68,12 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
-
+  assets:
+    - assets/linkedin/icons/
+    - assets/linkedin/images/
+    - assets/linkedin/images/users/
+    - assets/linkedin/images/posts/
+  
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
@@ -79,12 +85,6 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  assets:
-    - assets/linkedin/icons/
-    - assets/linkedin/images/
-    - assets/linkedin/images/users/
-    - assets/linkedin/images/posts/
-
   fonts:
     - family: Quicksand
       fonts:
@@ -116,7 +116,6 @@ flutter:
           weight: 600
         - asset: assets/fonts/aeonik/Aeonik-Regular.ttf
           weight: 400
-
   # fonts:
   #   - family: Schyler
   #     fonts:
