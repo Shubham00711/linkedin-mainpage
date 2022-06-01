@@ -1,1 +1,1 @@
-# A LinkedIn Android App
+# A LinkedIn Flutter App
