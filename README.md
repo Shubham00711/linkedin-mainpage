@@ -1,1 +1,1 @@
-# A LinkedIn Flutter App
+# A LinkedIn Flutter Application
